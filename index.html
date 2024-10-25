@@ -1,47 +1,65 @@
 <!DOCTYPE html>
-<!-- saved from url=(0070)https://chi-loong.github.io/HCDIV/assignments/assignment1-starter.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Assignment 1</title>
-<style>
-
-  /* CSS goes here 
-  
-    E.g. table {
-    }
-  
-  */
-
-</style>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Assignment 1</title>
+    <style>
+        /* CSS goes here 
+        E.g. table {
+        }
+        */
+        table {
+            width: 50%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Singapore 2-hr weather forecast</h2>
+<h2>Singapore 2-hr Weather Forecast</h2>
 <h4 id="timestring"></h4>
 <table id="weatherTable">
-    <tbody><tr>
+    <tr>
         <th>Area</th>
         <th>Forecast</th>
     </tr>
-</tbody></table>
+</table>
 
 <script>
-fetch('https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast')
-  .then(response => response.json())
-  .then(responsedata => {
+fetch('https://api.data.gov.sg/v1/environment/2-hour-weather-forecast')
+    .then(response => response.json())
+    .then(responsedata => {
+        let timestamp = responsedata.items[0].update_timestamp;
+        let forecasts = responsedata.items[0].forecasts;
 
-    /* JS code goes here.
-    
-    */
-  
-    let timestamp = responsedata.data.items[0].update_timestamp;
-    let forecasts = responsedata.data.items[0].forecasts;
-    
-    console.log(timestamp);
-    console.log(forecasts);
-  
-  });
+        // Display the timestamp
+        let timestring = document.getElementById("timestring");
+        timestring.textContent = "Last updated: " + new Date(timestamp).toLocaleString();
 
+        // Populate the table with weather data
+        let weatherTable = document.getElementById("weatherTable");
 
+        forecasts.forEach(forecast => {
+            let row = weatherTable.insertRow();
+            let areaCell = row.insertCell(0);
+            let forecastCell = row.insertCell(1);
+
+            areaCell.textContent = forecast.area;
+            forecastCell.textContent = forecast.forecast;
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching the weather data:', error);
+    });
 </script>
 
-</body></html>
+</body>
+</html>
