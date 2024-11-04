@@ -2,55 +2,67 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Assignment 1</title>
+    <title>Singapore 2-hr Weather Forecast</title>
     <style>
-        /* Sleek, minimal dark background */
-        body {
-            background-color: #1a1a1d;
-            color: #e0e0e0;
-            font-family: Arial, sans-serif;
+        /* Animated, color-changing background */
+        @keyframes colorChange {
+            0% { background-color: #1a1a1d; }
+            25% { background-color: #2a2a35; }
+            50% { background-color: #1f1f23; }
+            75% { background-color: #3b3b40; }
+            100% { background-color: #1a1a1d; }
         }
 
-        /* Center-align and style headings with a subtle color */
-        h2, h4 {
+        body {
+            animation: colorChange 10s infinite; /* Duration and repetition */
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
             text-align: center;
-            color: #b0b0b0; /* Soft gray for minimalistic style */
+        }
+
+        h2, h4 {
+            color: #b0b0b0;
         }
 
         /* Table styling */
         table {
-            width: 60%;
+            width: 80%;
             border-collapse: collapse;
             margin: 20px auto;
-            background-color: #2c2c2e; /* Slightly lighter gray for table */
+            background-color: #2c2c2e;
             color: #e0e0e0;
             border-radius: 8px;
         }
 
-        /* Header row styling with a soft, neutral color */
         th {
-            background-color: #3a3a3c; /* Dark gray for header */
+            background-color: #3a3a3c;
             color: #d1d1d1;
             padding: 10px;
             font-size: 1.1em;
             text-align: left;
         }
 
-        /* Table cell styling with subtle border */
         td {
-            border: 1px solid #444444; /* Very subtle border */
+            border: 1px solid #444444;
             padding: 8px;
             text-align: left;
         }
 
-        /* Hover effect for rows */
         tr:hover {
-            background-color: #3a3a3c; /* Slight highlight on hover */
+            background-color: #3a3a3c;
         }
 
-        /* Timestamp styling */
-        #timestring {
-            color: #b0b0b0;
+        /* Search box styling */
+        #searchBox {
+            margin: 20px auto;
+            padding: 10px;
+            width: 60%;
+            border-radius: 8px;
+            border: 1px solid #444444;
+            font-size: 1em;
+            background-color: #1f1f23;
+            color: #e0e0e0;
+            outline: none;
         }
     </style>
 </head>
@@ -58,6 +70,7 @@
 
 <h2>Singapore 2-hr Weather Forecast</h2>
 <h4 id="timestring"></h4>
+<input type="text" id="searchBox" placeholder="Search for an area or forecast..." onkeyup="filterTable()">
 <table id="weatherTable">
     <tr>
         <th>Area</th>
@@ -91,8 +104,24 @@ fetch('https://api.data.gov.sg/v1/environment/2-hour-weather-forecast')
     .catch(error => {
         console.error('Error fetching the weather data:', error);
     });
+
+// Function to filter table based on search input
+function filterTable() {
+    let input = document.getElementById("searchBox").value.toLowerCase();
+    let table = document.getElementById("weatherTable");
+    let rows = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < rows.length; i++) {
+        let area = rows[i].getElementsByTagName("td")[0]?.textContent.toLowerCase();
+        let forecast = rows[i].getElementsByTagName("td")[1]?.textContent.toLowerCase();
+        if (area.includes(input) || forecast.includes(input)) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+}
 </script>
 
 </body>
 </html>
-
